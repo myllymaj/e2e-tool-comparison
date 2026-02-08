@@ -1,0 +1,17 @@
+# Visual Studio
+.vs/
+bin/
+obj/
+
+# Playwright
+**/playwright/.cache/
+**/ms-playwright/
+
+# Node / Cypress
+node_modules/
+cypress/videos/
+cypress/screenshots/
+
+# OS
+.DS_Store
+Thumbs.db

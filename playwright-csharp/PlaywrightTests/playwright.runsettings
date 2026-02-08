@@ -1,0 +1,12 @@
+﻿<RunSettings>
+	<RunConfiguration>
+		<EnvironmentVariables>
+			<HEADED>1</HEADED>
+			<PWDEBUG>1</PWDEBUG>
+		</EnvironmentVariables>
+	</RunConfiguration>
+
+	<Playwright>
+		<BrowserName>chromium</BrowserName>
+	</Playwright>
+</RunSettings>
