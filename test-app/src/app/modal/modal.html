@@ -1,0 +1,15 @@
+<div
+  class="modal"
+  data-cy="modal"
+  data-testid="modal"
+>
+  <p data-testid="modal-text">This is a modal window.</p>
+
+  <button
+    (click)="close.emit()"
+    data-cy="close-modal-button"
+    data-testid="close-modal-button"
+  >
+    Close
+  </button>
+</div>
