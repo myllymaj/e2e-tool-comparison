@@ -1,11 +1,13 @@
 <div class="card" data-testid="home-card" data-cy="home-card">
   <h2 data-testid="home-title" data-cy="home-title">Home</h2>
+
   <p data-testid="home-description" data-cy="home-description">
     Welcome to the E2E testing demo application.
   </p>
 
   <button
-    (click)="showModal = true"
+    (click)="openModal()"
+    [disabled]="showModal"
     data-cy="open-modal-button"
     data-testid="open-modal-button"
   >
@@ -13,10 +15,5 @@
   </button>
 </div>
 
-<app-modal
-  *ngIf="showModal"
-  (close)="showModal = false"
-  data-cy="modal"
-  data-testid="modal"
->
-</app-modal>
+<!-- Modal rendered only when open -->
+<app-modal *ngIf="showModal" (close)="closeModal()"> </app-modal>

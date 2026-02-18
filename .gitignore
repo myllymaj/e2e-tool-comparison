@@ -15,3 +15,7 @@ cypress/screenshots/
 # OS
 .DS_Store
 Thumbs.db
+
+# Playwright test artifacts
+playwright-csharp/PlaywrightTests/TestResults/
+playwright-csharp/PlaywrightTests/playwright-traces/

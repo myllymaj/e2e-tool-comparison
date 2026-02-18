@@ -1,0 +1,65 @@
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  background: #ffffff;
+  color: #222;
+
+  padding: 40px 44px;
+  border-radius: 16px;
+
+  width: min(92vw, 520px);
+  max-height: 80vh;
+
+  z-index: 1000;
+
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28), 0 6px 18px rgba(0, 0, 0, 0.16);
+
+  font-size: 18px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.modal-backdrop {
+  position: fixed;
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: min(96vw, 650px);   
+  height: min(90vh, 450px);  
+
+  background: rgba(0, 0, 0, 0.35);
+
+  border-radius: 20px;
+
+  z-index: 999;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+}
+
+
+.modal button {
+  margin-top: 24px;
+
+  padding: 12px 28px;
+  font-size: 18px;
+
+  border-radius: 10px;
+  border: none;
+
+  background: #1976d2;
+  color: white;
+
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+.modal button:hover:not(:disabled) {
+  background: #1565c0;
+}
+
+.modal button:active:not(:disabled) {
+  transform: translateY(1px);
+}

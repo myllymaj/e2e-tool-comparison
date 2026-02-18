@@ -1,15 +1,11 @@
-<div
-  class="modal"
-  data-cy="modal"
-  data-testid="modal"
->
-  <p data-testid="modal-text">This is a modal window.</p>
+<div class="modal-backdrop" data-testid="modal-backdrop" data-cy="modal-backdrop"></div>
 
-  <button
-    (click)="close.emit()"
-    data-cy="close-modal-button"
-    data-testid="close-modal-button"
-  >
+<div class="modal" data-testid="modal" data-cy="modal">
+  <p data-testid="modal-text" data-cy="modal-text">
+    This is a modal window.
+  </p>
+
+  <button (click)="onClose()" [disabled]="closing" data-testid="close-modal-button" data-cy="close-modal-button">
     Close
   </button>
 </div>

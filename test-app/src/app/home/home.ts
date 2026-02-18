@@ -11,4 +11,12 @@ import { Modal } from '../modal/modal';
 })
 export class Home {
   showModal = false;
+
+  openModal() {
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
+  }
 }
