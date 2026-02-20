@@ -10,9 +10,9 @@ namespace PlaywrightTests.Tests
     /// product list correctly after asynchronous data loading.
     ///
     /// Purpose:
-    /// To evaluate interaction with form elements, handling of dynamically
-    /// loaded content, and reliability of assertions on collections of elements
-    /// in a single-page application context.
+    /// To evaluate interaction with form controls, handling of dynamically
+    /// loaded content, and the reliability of assertions on collections of
+    /// elements in a single-page application context.
     /// </summary>
     [TestClass]
     public class ProductFilteringScenarioTests : E2EBaseTest
@@ -41,6 +41,9 @@ namespace PlaywrightTests.Tests
             // Verify navigation to the Products route
             await Expect(Page).ToHaveURLAsync(new Regex(".*/products$"));
 
+            // Home content should no longer be present
+            await Expect(Page.GetByTestId("home-title")).ToHaveCountAsync(0);
+
             // Wait for asynchronous loading to complete
             await Expect(Page.GetByTestId("loading")).ToBeVisibleAsync();
             await Expect(Page.GetByTestId("loading")).ToBeHiddenAsync(new() { Timeout = 10000 });
@@ -67,6 +70,10 @@ namespace PlaywrightTests.Tests
             await Expect(productItems.Nth(0)).ToHaveTextAsync("Pizza (food)");
             await Expect(productItems.Nth(1)).ToHaveTextAsync("Burger (food)");
 
+            // Verify that drink items are not present in the product list
+            await Expect(productItems.Filter(new() { HasText = "Cola (drink)" })).ToHaveCountAsync(0);
+            await Expect(productItems.Filter(new() { HasText = "Water (drink)" })).ToHaveCountAsync(0);
+
             // Apply Drink filter and verify results
             await filterSelect.SelectOptionAsync("drink");
             await Expect(filterSelect).ToHaveValueAsync("drink");
@@ -74,6 +81,10 @@ namespace PlaywrightTests.Tests
             await Expect(productItems).ToHaveCountAsync(2);
             await Expect(productItems.Nth(0)).ToHaveTextAsync("Cola (drink)");
             await Expect(productItems.Nth(1)).ToHaveTextAsync("Water (drink)");
+
+            // Verify that food items are not present in the product list
+            await Expect(productItems.Filter(new() { HasText = "Pizza (food)" })).ToHaveCountAsync(0);
+            await Expect(productItems.Filter(new() { HasText = "Burger (food)" })).ToHaveCountAsync(0);
 
             // Reset filter to All and verify full list is restored
             await filterSelect.SelectOptionAsync("all");

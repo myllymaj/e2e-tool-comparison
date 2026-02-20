@@ -10,8 +10,8 @@ namespace PlaywrightTests.Tests
     /// the URL correctly and that the corresponding page content is rendered.
     ///
     /// Purpose:
-    /// To evaluate routing behavior, page transitions, waiting mechanisms,
-    /// and reliability of element visibility assertions in a single-page
+    /// To evaluate interaction with navigation elements, routing behavior,
+    /// page transitions, and the reliability of assertions in a single-page
     /// application context.
     /// </summary>
     [TestClass]
@@ -44,6 +44,9 @@ namespace PlaywrightTests.Tests
             // Verify navigation to the Products route
             await Expect(Page).ToHaveURLAsync(new Regex(".*/products$"));
 
+            // Home content should no longer be present
+            await Expect(Page.GetByTestId("home-title")).ToHaveCountAsync(0);
+
             // Wait for asynchronous loading to complete
             await Expect(Page.GetByTestId("loading")).ToBeHiddenAsync(new() { Timeout = 10000 });
 
@@ -60,6 +63,9 @@ namespace PlaywrightTests.Tests
             // Verify navigation to the About route
             await Expect(Page).ToHaveURLAsync(new Regex(".*/about$"));
 
+            // Products content should no longer be present
+            await Expect(Page.GetByTestId("products-page")).ToHaveCountAsync(0);
+
             // Confirm that the About page content is displayed
             await Expect(Page.GetByTestId("about-title")).ToBeVisibleAsync();
 
@@ -69,7 +75,10 @@ namespace PlaywrightTests.Tests
             await navHome.ClickAsync();
 
             // Verify navigation back to the root route
-            await Expect(Page).ToHaveURLAsync("http://localhost:4200");
+            await Expect(Page).ToHaveURLAsync(new Regex(".*/$"));
+
+            // About content should no longer be present
+            await Expect(Page.GetByTestId("about-title")).ToHaveCountAsync(0);
 
             // Confirm that the Home page content is displayed
             await Expect(Page.GetByTestId("home-title")).ToBeVisibleAsync();

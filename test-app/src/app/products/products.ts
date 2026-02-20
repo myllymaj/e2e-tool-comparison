@@ -18,7 +18,7 @@ export class Products implements OnInit {
   products: { name: string; category: string }[] = [];
 
   ngOnInit() {
-    const delay = 1500 + Math.random() * 2000;
+      const delay = 2500;
 
     setTimeout(() => {
       this.products = [

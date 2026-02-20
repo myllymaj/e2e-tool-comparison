@@ -11,10 +11,10 @@ namespace PlaywrightTests.Tests
     /// such as button enablement and overlay handling.
     ///
     /// Purpose:
-    /// To assess synchronization between user actions and DOM updates,
-    /// and the reliability of element visibility assertions in E2E testing.
+    /// To evaluate interaction with dynamic UI components, synchronization
+    /// between user actions and DOM updates, and the reliability of assertions
+    /// in a single-page application context.
     /// </summary>
-
     [TestClass]
     public class ModalInteractionScenarioTests : E2EBaseTest
     {
@@ -35,9 +35,12 @@ namespace PlaywrightTests.Tests
             var modalText = Page.GetByTestId("modal-text");
             var closeModalButton = Page.GetByTestId("close-modal-button");
             var backdrop = Page.GetByTestId("modal-backdrop");
+            var homeTitle = Page.GetByTestId("home-title");
 
-            // Verify modal is initially closed
+            // Verify modal and related elements are initially not visible
             await Expect(modal).ToBeHiddenAsync();
+            await Expect(modalText).ToBeHiddenAsync();
+            await Expect(closeModalButton).ToBeHiddenAsync();
 
             // Open modal
             await Expect(openModalButton).ToBeVisibleAsync();
@@ -52,6 +55,9 @@ namespace PlaywrightTests.Tests
             await Expect(modalText).ToBeVisibleAsync();
             await Expect(backdrop).ToBeVisibleAsync();
 
+            // Verify underlying page content still exists (overlay behavior)
+            await Expect(homeTitle).ToBeVisibleAsync();
+
             // Verify trigger button is disabled while modal is open
             await Expect(openModalButton).ToBeDisabledAsync();
 
@@ -63,9 +69,10 @@ namespace PlaywrightTests.Tests
             await Expect(closeModalButton).ToBeEnabledAsync();
             await closeModalButton.ClickAsync();
 
-            // Verify modal and backdrop are hidden
+            // Verify modal, backdrop, and content are hidden
             await Expect(modal).ToBeHiddenAsync();
             await Expect(backdrop).ToBeHiddenAsync();
+            await Expect(modalText).ToBeHiddenAsync();
             await Expect(closeModalButton).ToBeHiddenAsync();
 
             // Verify trigger button is enabled again
