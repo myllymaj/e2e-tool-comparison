@@ -8,27 +8,58 @@
     Products
   </h2>
 
+
+
   <label for="filter">Filter:</label>
 
-  <select
-    id="filter"
-    (change)="setFilter($event)"
-    data-cy="filter-select"
-    data-testid="filter-select"
-  >
+  <select id="filter" (change)="setFilter($event)" data-cy="filter-select" data-testid="filter-select">
     <option value="all">All</option>
     <option value="food">Food</option>
     <option value="drink">Drink</option>
   </select>
 
   <ul data-testid="product-list" data-cy="product-list">
-    <li
-      *ngFor="let p of filteredProducts()"
-      data-cy="product-item"
-      data-testid="product-item"
-    >
-      {{ p.name }} ({{ p.category }})
+    <li *ngFor="let p of filteredProducts() let i = index" data-cy="product-item" data-testid="product-item">
+      {{ p.name }} ({{ p.category }}) - ${{ p.price }}
+
+      <button (click)="addToCart(p)" data-cy="add-to-cart" data-testid="add-to-cart">
+        Add to cart
+      </button>
     </li>
   </ul>
+
+
+</div>
+
+<div *ngIf="purchaseSuccess" class="thankyou-overlay" data-cy="thank-you-modal">
+
+  <div class="thankyou-box">
+
+    <button class="thankyou-close" (click)="purchaseSuccess=false">
+      ✕
+    </button>
+
+    <h2>🎉 Thank you for your purchase!</h2>
+
+    <p>Your order has been placed successfully.</p>
+
+    <h3>Receipt</h3>
+
+    <ul class="receipt-list">
+
+      <li *ngFor="let item of cartService.lastOrder">
+
+        {{ item.name }} × {{ item.quantity }}
+        - {{ (item.price * item.quantity).toFixed(2) }}€
+
+      </li>
+
+    </ul>
+
+    <div class="receipt-total">
+      Total: {{ getLastOrderTotal().toFixed(2) }}€
+    </div>
+
+  </div>
 
 </div>

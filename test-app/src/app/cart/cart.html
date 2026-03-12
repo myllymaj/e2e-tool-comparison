@@ -1,0 +1,109 @@
+<div class="cart-root">
+    <div class="cart-window" data-cy="cart-modal" *ngIf="cartService.cartOpen">
+
+        <button class="close-button" (click)="closeCart()" data-cy="close-cart">
+            ✕
+        </button>
+
+        <h3 class="cart-title">Your Cart</h3>
+
+        <!-- EMPTY CART -->
+        <div *ngIf="cartService.cart.length === 0" class="empty-cart" data-cy="cart-empty">
+            Your cart is empty.
+        </div>
+
+        <!-- CART ITEMS -->
+        <div *ngIf="cartService.cart.length > 0">
+
+            <ul class="cart-list">
+
+                <li *ngFor="let item of cartService.cart; let i = index" class="cart-item" data-cy="cart-item">
+
+                    <div class="item-name">
+                        {{ item.name }}
+                    </div>
+
+                    <div class="cart-controls">
+
+                        <button (click)="cartService.decrease(i)" data-cy="decrease-item">
+                            −
+                        </button>
+
+                        <span class="quantity">
+                            {{ item.quantity }}
+                        </span>
+
+                        <button (click)="cartService.increase(i)" data-cy="increase-item">
+                            +
+                        </button>
+
+                    </div>
+
+                    <div class="item-price">
+                        {{ (item.price * item.quantity).toFixed(2) }}€
+                    </div>
+
+                    <button class="remove-btn" (click)="cartService.remove(i)" data-cy="remove-item">
+                        Remove
+                    </button>
+
+                </li>
+
+            </ul>
+
+            <div class="cart-total" data-cy="cart-total">
+                <span>Total</span>
+                <span>{{ cartService.total().toFixed(2) }}€</span>
+            </div>
+
+            <button class="checkout-btn" (click)="checkout()"
+                data-cy="checkout-button">
+                Confirm purchase
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- CONFIRM PURCHASE DIALOG -->
+    <div *ngIf="state === 'confirm'" class="confirm-overlay" data-test="confirm-modal" data-cy="confirm-modal">
+
+        <div class="confirm-modal">
+
+            <h3>Confirm purchase</h3>
+
+            <p>Are you sure you want to purchase these items?</p>
+
+            <div class="confirm-buttons">
+
+                <button (click)="confirmCheckout()" data-cy="confirm-yes">
+                    Yes
+                </button>
+
+                <button (click)="cancelCheckout()" data-cy="confirm-no">
+                    No
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- PROCESSING SPINNER -->
+    <div *ngIf="state === 'processing'" class="processing-overlay" data-testid="purchase-loading"
+        data-cy="purchase-loading">
+        <div class="processing-modal">
+            <div class="spinner"></div>
+            <p>Processing purchase...</p>
+        </div>
+    </div>
+
+    <!-- SUCCESS TOAST -->
+    <div *ngIf="state === 'success'" class="success-toast" data-testid="purchase-success" data-cy="purchase-success">
+        ✔ Purchase successful!
+    </div>
+</div>

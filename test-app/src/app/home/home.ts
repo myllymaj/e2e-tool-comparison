@@ -10,6 +10,7 @@ import { Modal } from '../modal/modal';
   styleUrl: './home.css',
 })
 export class Home {
+
   showModal = false;
 
   openModal() {
@@ -19,4 +20,5 @@ export class Home {
   closeModal() {
     this.showModal = false;
   }
+
 }

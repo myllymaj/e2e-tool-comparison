@@ -1,25 +1,23 @@
 <nav data-testid="navbar" data-cy="navbar">
-  <a
-    routerLink="/"
-    data-cy="nav-home"
-    data-testid="nav-home"
-  >
-    Home
-  </a>
 
-  <a
-    routerLink="/products"
-    data-cy="nav-products"
-    data-testid="nav-products"
-  >
-    Products
-  </a>
+  <a routerLink="/" data-cy="nav-home" data-testid="nav-home">Home</a>
 
-  <a
-    routerLink="/about"
-    data-cy="nav-about"
-    data-testid="nav-about"
-  >
-    About
-  </a>
+  <a routerLink="/products" data-cy="nav-products" data-testid="nav-products">Products</a>
+
+  <a routerLink="/about" data-cy="nav-about" data-testid="nav-about">About</a>
+
+
+  <div class="cart-wrapper">
+
+    <button (click)="toggleCart()" data-cy="open-cart" data-testid="open-cart">
+
+      Cart
+
+    </button>
+
+    <app-cart *ngIf="cartService.cartOpen">
+    </app-cart>
+
+  </div>
+
 </nav>
