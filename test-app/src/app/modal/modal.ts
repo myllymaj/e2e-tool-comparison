@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './modal.html',
-  styleUrl: './modal.css',   
+  styleUrl: './modal.css',
 })
 export class Modal {
   @Output() close = new EventEmitter<void>();

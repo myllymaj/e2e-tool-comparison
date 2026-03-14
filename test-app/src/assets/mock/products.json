@@ -1,0 +1,17 @@
+[
+  { "id": 1, "name": "Pizza", "category": "food", "price": 11, "stock": 5 },
+  { "id": 2, "name": "Burger", "category": "food", "price": 9, "stock": 3 },
+  { "id": 3, "name": "Fries", "category": "food", "price": 4, "stock": 6 },
+  { "id": 4, "name": "Salad", "category": "food", "price": 7, "stock": 4 },
+
+  { "id": 5, "name": "Cola", "category": "drink", "price": 3, "stock": 8 },
+  { "id": 6, "name": "Water", "category": "drink", "price": 2, "stock": 10 },
+  { "id": 7, "name": "Orange Juice", "category": "drink", "price": 4, "stock": 5 },
+  { "id": 8, "name": "Coffee", "category": "drink", "price": 3, "stock": 7 },
+  { "id": 9, "name": "Energy Drink", "category": "drink", "price": 5, "stock": 6 },
+
+  { "id": 10, "name": "Chocolate", "category": "snack", "price": 2, "stock": 9 },
+  { "id": 11, "name": "Chips", "category": "snack", "price": 3, "stock": 6 },
+  { "id": 12, "name": "Cookies", "category": "snack", "price": 4, "stock": 4 },
+  { "id": 13, "name": "Limited Pizza", "category": "food", "price": 12, "stock": 1 }
+]

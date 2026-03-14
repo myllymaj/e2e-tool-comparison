@@ -1,19 +1,70 @@
-<div class="card" data-testid="home-card" data-cy="home-card">
-  <h2 data-testid="home-title" data-cy="home-title">Home</h2>
+<div class="home-container" data-cy="home-page">
 
-  <p data-testid="home-description" data-cy="home-description">
-    Welcome to the E2E testing demo application.
-  </p>
+  <div class="card home-card" data-cy="home-card">
 
-  <button
-    (click)="openModal()"
-    [disabled]="showModal"
-    data-cy="open-modal-button"
-    data-testid="open-modal-button"
-  >
-    Open Modal
-  </button>
+    <h1 class="home-title" data-cy="home-title">
+      TestBites – E2E Testing Demo Store
+    </h1>
+
+    <p class="home-description" data-cy="home-description">
+      This demo webshop was developed to support the evaluation and comparison
+      of modern end-to-end testing frameworks such as Playwright and Cypress.
+      The application includes common ecommerce interactions that can be
+      automated and validated through E2E tests.
+    </p>
+
+    <div class="home-actions">
+
+      <button (click)="openModal()" [disabled]="showModal" class="primary-btn" data-cy="open-modal-button">
+
+        Open Example Modal
+
+      </button>
+
+      <a routerLink="/products" class="secondary-btn" data-cy="go-products">
+
+        Browse Products
+
+      </a>
+
+    </div>
+
+  </div>
+
+
+  <div class="card test-features">
+
+    <h2 data-cy="features-title">
+      Testable Features
+    </h2>
+
+    <ul class="feature-list">
+
+      <li data-cy="feature-loading">
+        Simulated loading states
+      </li>
+
+      <li data-cy="feature-search">
+        Product search and filtering
+      </li>
+
+      <li data-cy="feature-cart">
+        Shopping cart interactions
+      </li>
+
+      <li data-cy="feature-checkout">
+        Checkout confirmation workflow
+      </li>
+
+      <li data-cy="feature-storage">
+        Persistent browser storage (localStorage)
+      </li>
+
+    </ul>
+
+  </div>
+
 </div>
 
-<!-- Modal rendered only when open -->
-<app-modal *ngIf="showModal" (close)="closeModal()"> </app-modal>
+<app-modal *ngIf="showModal" (close)="closeModal()" data-cy="example-modal">
+</app-modal>

@@ -1,22 +1,34 @@
-<nav data-testid="navbar" data-cy="navbar">
+<nav class="navbar" data-cy="navbar">
 
-  <a routerLink="/" data-cy="nav-home" data-testid="nav-home">Home</a>
+  <a routerLink="/" class="logo" data-testid="logo" data-cy="logo">
+    <span class="logo-icon">🍔</span>
+    <span class="logo-main">Test</span>
+    <span class="logo-accent">Bites</span>
+  </a>
 
-  <a routerLink="/products" data-cy="nav-products" data-testid="nav-products">Products</a>
+  <div class="nav-links">
 
-  <a routerLink="/about" data-cy="nav-about" data-testid="nav-about">About</a>
+    <a routerLink="/" routerLinkActive="active" class="nav-link">Home</a>
+    <a routerLink="/products" routerLinkActive="active" class="nav-link">Products</a>
+    <a routerLink="/about" routerLinkActive="active" class="nav-link">About</a>
 
+  </div>
 
   <div class="cart-wrapper">
 
-    <button (click)="toggleCart()" data-cy="open-cart" data-testid="open-cart">
+    <button class="cart-btn" (click)="toggleCart()" data-testid="open-cart" data-cy="open-cart">
 
-      Cart
+      🛒 Cart
+
+      <span *ngIf="cartService.getItemCount() > 0" class="cart-count" data-testid="cart-count" data-cy="cart-count">
+
+        {{ cartService.getItemCount() }}
+
+      </span>
 
     </button>
 
-    <app-cart *ngIf="cartService.cartOpen">
-    </app-cart>
+    <app-cart *ngIf="cartService.cartOpen"></app-cart>
 
   </div>
 

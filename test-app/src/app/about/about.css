@@ -1,0 +1,45 @@
+:host {
+  display: block;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+  line-height: 1.6;
+}
+
+[data-cy='about-intro'] {
+  font-size: 18px;
+  font-weight: 500;
+  color: #374151;
+
+  margin-bottom: 18px;
+}
+
+[data-cy='about-title'] {
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: #111827;
+}
+
+p {
+  color: #4b5563;
+  margin-bottom: 16px;
+}
+
+h2 {
+  margin-top: 32px;
+  margin-bottom: 10px;
+
+  font-size: 22px;
+  color: #111827;
+}
+
+ul {
+  margin-top: 10px;
+  margin-bottom: 18px;
+  padding-left: 20px;
+}
+
+li {
+  margin-bottom: 6px;
+  color: #4b5563;
+}

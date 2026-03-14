@@ -1,40 +1,63 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CartService } from '../cart.service';
+import { FormsModule } from '@angular/forms';
+import { CartService } from '../services/cart.service';
+import { ProductService, Product } from '../services/product.service';
 
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './products.html',
   styleUrl: './products.css',
 })
 export class Products implements OnInit {
-  constructor(private cd: ChangeDetectorRef, public cartService: CartService) {}
+  constructor(
+    public cartService: CartService,
+    private productService: ProductService,
+    private cd: ChangeDetectorRef
+  ) {}
+
   purchaseSuccess = false;
   loading = true;
-  filter = 'all';
 
-  products: { name: string; category: string; price: number }[] = [];
+  filter = 'all';
+  search = '';
+
+  products: Product[] = [];
 
   ngOnInit() {
-    const delay = 2500;
+    const savedProducts = localStorage.getItem('products');
 
+    // simulated loading for E2E tests
     setTimeout(() => {
-      this.products = [
-        { name: 'Pizza', category: 'food', price: 11 },
-        { name: 'Burger', category: 'food', price: 9 },
-        { name: 'Cola', category: 'drink', price: 3 },
-        { name: 'Water', category: 'drink', price: 2 },
-      ];
+      if (savedProducts) {
+        this.products = JSON.parse(savedProducts).map((p: Product) => ({
+          ...p,
+          initialStock: p.initialStock ?? p.stock,
+        }));
 
-      this.loading = false;
-      this.cd.detectChanges();
-    }, delay);
+        this.loading = false;
+        this.cd.detectChanges();
+      } else {
+        this.productService.getProducts().then((products) => {
+          this.products = products.map((p) => ({
+            ...p,
+            initialStock: p.stock,
+          }));
 
+          this.saveProducts();
+          this.loading = false;
+          this.cd.detectChanges();
+        });
+      }
+    }, 3000);
+
+    // purchase success trigger
     setInterval(() => {
       if (this.cartService.purchaseCompleted) {
         this.purchaseSuccess = true;
+
         this.cd.detectChanges();
 
         this.cartService.purchaseCompleted = false;
@@ -42,20 +65,60 @@ export class Products implements OnInit {
     }, 200);
   }
 
-  setFilter(event: Event) {
-    const value = (event.target as HTMLSelectElement).value;
-    this.filter = value;
+  saveProducts() {
+    localStorage.setItem('products', JSON.stringify(this.products));
   }
 
-  filteredProducts() {
-    if (this.filter === 'all') return this.products;
-    return this.products.filter((p) => p.category === this.filter);
+  filteredProducts(): Product[] {
+    let result = this.products;
+
+    if (this.filter !== 'all') {
+      result = result.filter((p) => p.category === this.filter);
+    }
+
+    if (this.search.trim()) {
+      result = result.filter((p) => p.name.toLowerCase().includes(this.search.toLowerCase()));
+    }
+
+    return result;
   }
 
-  addToCart(product: any) {
-    this.cartService.add(product);
+  addToCart(product: Product) {
+    if (product.stock > 0) {
+      this.cartService.add(product);
+
+      this.saveProducts();
+    }
   }
+
+  increaseCartItem(product: Product) {
+    this.cartService.increaseByName(product.name);
+
+    this.saveProducts();
+  }
+
+  decreaseCartItem(product: Product) {
+    this.cartService.decreaseByName(product.name);
+
+    this.saveProducts();
+  }
+
   getLastOrderTotal(): number {
     return this.cartService.lastOrder.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  }
+
+  resetProducts() {
+    localStorage.removeItem('products');
+    location.reload();
+  }
+
+  getAvailableStock(product: Product): number {
+    const cartItem = this.cartService.cart.find((c) => c.name === product.name);
+
+    if (!cartItem) {
+      return product.initialStock ?? product.stock;
+    }
+
+    return (product.initialStock ?? 0) - cartItem.quantity;
   }
 }

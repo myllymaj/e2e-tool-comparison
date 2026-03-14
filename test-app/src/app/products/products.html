@@ -1,65 +1,162 @@
-<div *ngIf="loading" data-cy="loading" data-testid="loading">
-  Loading products...
-</div>
+<div class="page-container">
+  <div *ngIf="loading" class="loading" data-cy="loading" data-testid="loading">
+    Loading products… (simulated network delay for testing)
+  </div>
 
-<div *ngIf="!loading" data-cy="products-page" data-testid="products-page">
+  <div *ngIf="!loading" data-cy="products-page" data-testid="products-page">
 
-  <h2 data-testid="products-title" data-cy="products-title">
-    Products
-  </h2>
+    <h2 class="page-title" data-testid="products-title" data-cy="products-title">
+      Products
+    </h2>
+    <p class="product-count" data-testid="product-count" data-cy="product-count">
+      Showing {{ filteredProducts().length }} products
+    </p>
 
+    <div class="product-toolbar">
 
+      <div class="search-wrapper">
+        <span class="search-icon">🔎</span>
+        <input type="text" placeholder="Search products..." [(ngModel)]="search" class="search-input"
+          data-testid="search-input" data-cy="search-input" />
+      </div>
 
-  <label for="filter">Filter:</label>
+      <div class="filter-bar" data-testid="filter-select" data-cy="filter-select">
 
-  <select id="filter" (change)="setFilter($event)" data-cy="filter-select" data-testid="filter-select">
-    <option value="all">All</option>
-    <option value="food">Food</option>
-    <option value="drink">Drink</option>
-  </select>
+        <button class="filter-btn" [class.active]="filter === 'all'" (click)="filter='all'">
+          All
+        </button>
 
-  <ul data-testid="product-list" data-cy="product-list">
-    <li *ngFor="let p of filteredProducts() let i = index" data-cy="product-item" data-testid="product-item">
-      {{ p.name }} ({{ p.category }}) - ${{ p.price }}
+        <button class="filter-btn" [class.active]="filter === 'food'" (click)="filter='food'">
+          Food
+        </button>
 
-      <button (click)="addToCart(p)" data-cy="add-to-cart" data-testid="add-to-cart">
-        Add to cart
-      </button>
-    </li>
-  </ul>
+        <button class="filter-btn" [class.active]="filter === 'drink'" (click)="filter='drink'">
+          Drinks
+        </button>
 
+        <button class="filter-btn" [class.active]="filter === 'snack'" (click)="filter='snack'">
+          Snacks
+        </button>
 
-</div>
+      </div>
 
-<div *ngIf="purchaseSuccess" class="thankyou-overlay" data-cy="thank-you-modal">
-
-  <div class="thankyou-box">
-
-    <button class="thankyou-close" (click)="purchaseSuccess=false">
-      ✕
-    </button>
-
-    <h2>🎉 Thank you for your purchase!</h2>
-
-    <p>Your order has been placed successfully.</p>
-
-    <h3>Receipt</h3>
-
-    <ul class="receipt-list">
-
-      <li *ngFor="let item of cartService.lastOrder">
-
-        {{ item.name }} × {{ item.quantity }}
-        - {{ (item.price * item.quantity).toFixed(2) }}€
-
-      </li>
-
-    </ul>
-
-    <div class="receipt-total">
-      Total: {{ getLastOrderTotal().toFixed(2) }}€
     </div>
+
+    <div class="product-grid" data-testid="product-list" data-cy="product-list">
+
+      <div class="product-card" *ngFor="let p of filteredProducts(); let i = index" data-cy="product-item"
+        data-testid="product-item">
+
+        <img class="product-image" [src]="'assets/products/' + p.name.toLowerCase() + '.png'" [alt]="p.name" />
+
+        <h3 class="product-name">
+          {{ p.name }}
+        </h3>
+
+        <div class="product-category">
+          {{ p.category }}
+        </div>
+
+        <div class="product-price">
+          {{ p.price }} €
+        </div>
+        <div class="product-stock" [class.low-stock]="getAvailableStock(p) > 0 && getAvailableStock(p) <= 3"
+          [class.in-stock]="getAvailableStock(p) > 3" [class.out-stock]="getAvailableStock(p) === 0">
+
+          Stock: {{ getAvailableStock(p) }}
+
+        </div>
+
+        <button class="add-btn" (click)="addToCart(p)" [disabled]="getAvailableStock(p) === 0" data-testid="add-to-cart"
+          data-cy="add-to-cart">
+
+          Add to cart
+
+        </button>
+
+        <div *ngIf="getAvailableStock(p) === 0" class="out-of-stock">
+          Out of stock
+        </div>
+
+      </div>
+
+    </div>
+
 
   </div>
 
+  <div *ngIf="!loading && filteredProducts().length === 0" class="empty-products" data-testid="no-products"
+    data-cy="no-products">
+    No products found
+  </div>
+
+  <div *ngIf="purchaseSuccess" class="thankyou-overlay" data-testid="thank-you-modal" data-cy="thank-you-modal">
+
+    <div class="thankyou-box">
+
+      <button class="thankyou-close" (click)="purchaseSuccess=false" data-testid="close-thankyou"
+        data-cy="close-thankyou">
+        ✕
+      </button>
+
+      <div class="success-icon">
+        ✔
+      </div>
+
+      <h2 class="thankyou-title">
+        Thank you for your purchase!
+      </h2>
+
+      <p class="thankyou-subtitle">
+        Your order has been placed successfully.
+      </p>
+
+      <div class="receipt">
+
+        <div class="receipt-header">
+          <span>Item</span>
+          <span>Total</span>
+        </div>
+
+        <div class="receipt-row" *ngFor="let item of cartService.lastOrder" data-testid="receipt-item"
+          data-cy="receipt-item">
+
+          <span class="receipt-item-name">
+            {{ item.name }} × {{ item.quantity }}
+          </span>
+
+          <span class="receipt-item-price">
+            {{ (item.price * item.quantity).toFixed(2) }} €
+          </span>
+
+        </div>
+
+        <div class="receipt-total">
+
+          <span>Total</span>
+
+          <span data-testid="receipt-total" data-cy="receipt-total">
+            {{ getLastOrderTotal().toFixed(2) }} €
+          </span>
+
+        </div>
+
+      </div>
+
+      <button class="continue-btn" (click)="purchaseSuccess=false" data-testid="continue-shopping"
+        data-cy="continue-shopping">
+
+        Continue shopping
+
+      </button>
+
+    </div>
+
+  </div>
+  <div class="reset-wrapper">
+    <p class="test-note">Testing utility</p>
+    <button class="reset-btn" (click)="resetProducts()" data-testid="reset-products" data-cy="reset-products">
+      Reset test data
+    </button>
+  </div>
 </div>

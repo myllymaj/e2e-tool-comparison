@@ -1,52 +1,78 @@
 body {
-  font-family: Arial, sans-serif;
   margin: 0;
-  background: #f4f6f8;
+  font-family: system-ui, Arial, sans-serif;
+  background: #f5f6f8;
+  color: #333;
 }
 
 header {
-  background: #1f2937;
-  color: white;
-  padding: 16px;
-}
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 
-nav a {
-  color: white;
-  margin-right: 16px;
-  text-decoration: none;
-  font-weight: bold;
-}
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
 
-nav a:hover {
-  text-decoration: underline;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
-
-main {
-  padding: 24px;
+.nav-link.active {
+  color: #2ecc71;
+  font-weight: 600;
+}
+.nav-link {
+  transition: color 0.2s ease;
 }
 
 .card {
   background: white;
-  padding: 16px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  margin-bottom: 16px;
+  padding: 20px;
+
+  border-radius: 12px;
+
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+
+  margin-bottom: 20px;
 }
 
 button {
   padding: 8px 14px;
+
   border: none;
-  border-radius: 6px;
-  background: #2563eb;
+  border-radius: 8px;
+
+  background: #2ecc71;
   color: white;
+
+  font-weight: 500;
+
   cursor: pointer;
+
+  transition: background 0.2s ease, transform 0.1s ease;
 }
 
 button:hover {
-  background: #1d4ed8;
+  background: #27ae60;
+}
+
+button:active {
+  transform: scale(0.97);
 }
 
 select {
-  padding: 6px;
-  margin-bottom: 12px;
+  padding: 6px 10px;
+
+  border-radius: 6px;
+  border: 1px solid #ddd;
+
+  background: white;
+}
+
+a {
+  color: inherit;
+}
+footer.footer {
+  width: 100%;
+  background: #f8fafc;
+  border-top: 2px solid #2ecc71;
+  text-align: center;
 }

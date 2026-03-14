@@ -1,11 +1,35 @@
-<div class="modal-backdrop" data-testid="modal-backdrop" data-cy="modal-backdrop"></div>
+<div class="modal-backdrop" (click)="onClose()" data-testid="modal-backdrop" data-cy="modal-backdrop">
 
-<div class="modal" data-testid="modal" data-cy="modal">
-  <p data-testid="modal-text" data-cy="modal-text">
-    This is a modal window.
-  </p>
+  <div class="modal" (click)="$event.stopPropagation()" data-testid="modal" data-cy="modal">
 
-  <button (click)="onClose()" [disabled]="closing" data-testid="close-modal-button" data-cy="close-modal-button">
-    Close
-  </button>
+    <button class="modal-close" (click)="onClose()" [disabled]="closing" data-testid="close-modal-button"
+      data-cy="close-modal-button">
+      ✕
+    </button>
+
+    <h2 class="modal-title" data-testid="modal-title" data-cy="modal-title">
+      Example Modal
+    </h2>
+
+    <p class="modal-text" data-testid="modal-text" data-cy="modal-text">
+      This modal demonstrates a simple UI component that can be used in
+      automated end-to-end testing scenarios.
+    </p>
+
+    <div class="modal-actions">
+
+      <button class="modal-btn secondary" (click)="onClose()" [disabled]="closing" data-testid="modal-cancel"
+        data-cy="modal-cancel">
+        Cancel
+      </button>
+
+      <button class="modal-btn primary" (click)="onClose()" [disabled]="closing" data-testid="modal-confirm"
+        data-cy="modal-confirm">
+        Confirm
+      </button>
+
+    </div>
+
+  </div>
+
 </div>

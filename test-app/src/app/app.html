@@ -1,9 +1,16 @@
-<header>
-  <h1>E2E Test Application</h1>
-
+<header class="app-header" data-testid="app-header" data-cy="app-header">
   <app-navbar></app-navbar>
 </header>
 
-<main>
+<main class="app-main">
   <router-outlet></router-outlet>
 </main>
+
+<footer data-testid="footer" data-cy="footer" class="footer">
+  <div class="footer-content">
+    <p>🍔 TestBites - Demo webshop for E2E testing.</p>
+    <p class="footer-sub">
+      Built for a Bachelor's thesis comparing Playwright and Cypress.
+    </p>
+  </div>
+</footer>
