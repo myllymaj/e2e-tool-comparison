@@ -4,14 +4,13 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class CartService {
-
   cart: {
-  name: string;
-  category: string;
-  price: number;
-  quantity: number;
-  maxStock: number;
-}[] = [];
+    name: string;
+    category: string;
+    price: number;
+    quantity: number;
+    maxStock: number;
+  }[] = [];
 
   lastOrder: {
     name: string;
@@ -22,6 +21,7 @@ export class CartService {
 
   cartOpen = false;
   purchaseCompleted = false;
+  isProcessing = false;
 
   constructor() {
     this.loadCart();
@@ -39,50 +39,39 @@ export class CartService {
   }
 
   add(product: { name: string; category: string; price: number; stock: number }) {
+    const existing = this.cart.find((p) => p.name === product.name);
 
-  const existing = this.cart.find(p => p.name === product.name);
-
-  if (existing) {
-
-    if (existing.quantity < existing.maxStock) {
-      existing.quantity++;
+    if (existing) {
+      if (existing.quantity < existing.maxStock) {
+        existing.quantity++;
+      }
+    } else {
+      this.cart.push({
+        name: product.name,
+        category: product.category,
+        price: product.price,
+        quantity: 1,
+        maxStock: product.stock,
+      });
     }
 
-  } else {
-
-    this.cart.push({
-      name: product.name,
-      category: product.category,
-      price: product.price,
-      quantity: 1,
-      maxStock: product.stock
-    });
-
-  }
-
-
-  this.saveCart();
-}
-
- increaseByName(name: string) {
-
-  const item = this.cart.find(p => p.name === name);
-
-  if (!item) return;
-
-  if (item.quantity < item.maxStock) {
-
-    item.quantity++;
-
     this.saveCart();
-
   }
 
-}
+  increaseByName(name: string) {
+    const item = this.cart.find((p) => p.name === name);
+
+    if (!item) return;
+
+    if (item.quantity < item.maxStock) {
+      item.quantity++;
+
+      this.saveCart();
+    }
+  }
 
   decreaseByName(name: string) {
-
-    const index = this.cart.findIndex(p => p.name === name);
+    const index = this.cart.findIndex((p) => p.name === name);
 
     if (index === -1) return;
 
@@ -96,7 +85,15 @@ export class CartService {
 
     this.saveCart();
   }
+  removeByName(name: string) {
+    const index = this.cart.findIndex((p) => p.name === name);
 
+    if (index !== -1) {
+      this.cart.splice(index, 1);
+
+      this.saveCart();
+    }
+  }
   clear() {
     this.cart = [];
     this.saveCart();
@@ -109,5 +106,4 @@ export class CartService {
   getItemCount(): number {
     return this.cart.reduce((sum, item) => sum + item.quantity, 0);
   }
-
 }

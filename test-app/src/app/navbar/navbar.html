@@ -16,7 +16,8 @@
 
   <div class="cart-wrapper">
 
-    <button class="cart-btn" (click)="toggleCart()" data-testid="open-cart" data-cy="open-cart">
+    <button class="cart-btn" (click)="toggleCart()" [disabled]="cartService.isProcessing" data-testid="open-cart"
+      data-cy="open-cart">
 
       🛒 Cart
 

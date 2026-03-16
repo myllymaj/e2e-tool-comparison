@@ -3,11 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
 export interface Product {
-  name: string
-  category: string
-  price: number
-  stock: number
-  initialStock?: number
+  name: string;
+  category: string;
+  price: number;
+  stock: number;
+  initialStock?: number;
+
+  sale?: boolean;
+  salePrice?: number;
 }
 
 @Injectable({

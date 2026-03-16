@@ -13,14 +13,10 @@ type CheckoutState = 'idle' | 'confirm' | 'processing' | 'success';
   styleUrl: './cart.css',
 })
 export class Cart {
-
   state: CheckoutState = 'idle';
   deliveryNote = '';
 
-  constructor(
-    public cartService: CartService,
-    private cd: ChangeDetectorRef
-  ) {}
+  constructor(public cartService: CartService, private cd: ChangeDetectorRef) {}
 
   isCartLocked(): boolean {
     return this.state === 'processing' || this.state === 'success';
@@ -33,13 +29,14 @@ export class Cart {
   decreaseCartItem(item: any) {
     this.cartService.decreaseByName(item.name);
   }
+  removeCartItem(item: any) {
+    this.cartService.removeByName(item.name);
+  }
 
   checkout() {
-
     if (this.cartService.cart.length === 0) return;
 
     this.state = 'confirm';
-
   }
 
   cancelCheckout() {
@@ -51,33 +48,30 @@ export class Cart {
   }
 
   confirmCheckout() {
-
     this.state = 'processing';
+    this.cartService.isProcessing = true;
+
     this.cd.detectChanges();
 
     setTimeout(() => {
-
       this.state = 'success';
       this.cd.detectChanges();
 
       setTimeout(() => {
-
         this.closeCart();
 
         this.cartService.lastOrder = [...this.cartService.cart];
 
         this.cartService.clear();
 
-        this.cd.detectChanges();
-
         this.cartService.purchaseCompleted = true;
+
+        this.cartService.isProcessing = false;
 
         this.state = 'idle';
 
+        this.cd.detectChanges();
       }, 3000);
-
     }, 4000);
-
   }
-
 }

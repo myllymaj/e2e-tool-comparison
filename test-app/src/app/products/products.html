@@ -9,32 +9,35 @@
       Products
     </h2>
     <p class="product-count" data-testid="product-count" data-cy="product-count">
-      Showing {{ filteredProducts().length }} products
+      Showing {{ filtered.length }} products
     </p>
 
     <div class="product-toolbar">
 
       <div class="search-wrapper">
         <span class="search-icon">🔎</span>
-        <input type="text" placeholder="Search products..." [(ngModel)]="search" class="search-input"
-          data-testid="search-input" data-cy="search-input" />
+        <input type="text" placeholder="Search products or categories..." [(ngModel)]="search"
+          (ngModelChange)="updateFilteredProducts()" class="search-input" data-testid="search-input"
+          data-cy="search-input" />
       </div>
 
       <div class="filter-bar" data-testid="filter-select" data-cy="filter-select">
 
-        <button class="filter-btn" [class.active]="filter === 'all'" (click)="filter='all'">
+        <button class="filter-btn" [class.active]="filter === 'all'" (click)="filter='all'; updateFilteredProducts()">
           All
         </button>
 
-        <button class="filter-btn" [class.active]="filter === 'food'" (click)="filter='food'">
+        <button class="filter-btn" [class.active]="filter === 'food'" (click)="filter='food'; updateFilteredProducts()">
           Food
         </button>
 
-        <button class="filter-btn" [class.active]="filter === 'drink'" (click)="filter='drink'">
+        <button class="filter-btn" [class.active]="filter === 'drink'"
+          (click)="filter='drink'; updateFilteredProducts()">
           Drinks
         </button>
 
-        <button class="filter-btn" [class.active]="filter === 'snack'" (click)="filter='snack'">
+        <button class="filter-btn" [class.active]="filter === 'snack'"
+          (click)="filter='snack'; updateFilteredProducts()">
           Snacks
         </button>
 
@@ -44,11 +47,13 @@
 
     <div class="product-grid" data-testid="product-list" data-cy="product-list">
 
-      <div class="product-card" *ngFor="let p of filteredProducts(); let i = index" data-cy="product-item"
-        data-testid="product-item">
+      <div class="product-card" *ngFor="let p of filtered" data-cy="product-item" data-testid="product-item">
 
         <img class="product-image" [src]="'assets/products/' + p.name.toLowerCase() + '.png'" [alt]="p.name" />
 
+        <div *ngIf="p.sale" class="sale-badge" data-testid="sale-badge" data-cy="sale-badge">
+          SALE
+        </div>
         <h3 class="product-name">
           {{ p.name }}
         </h3>
@@ -58,7 +63,15 @@
         </div>
 
         <div class="product-price">
-          {{ p.price }} €
+
+          <span *ngIf="p.sale" class="old-price">
+            {{ p.price }} €
+          </span>
+
+          <span class="sale-price">
+            {{ p.sale ? (p.salePrice ?? p.price) : p.price }} €
+          </span>
+
         </div>
         <div class="product-stock" [class.low-stock]="getAvailableStock(p) > 0 && getAvailableStock(p) <= 3"
           [class.in-stock]="getAvailableStock(p) > 3" [class.out-stock]="getAvailableStock(p) === 0">
@@ -67,7 +80,8 @@
 
         </div>
 
-        <button class="add-btn" (click)="addToCart(p)" [disabled]="getAvailableStock(p) === 0" data-testid="add-to-cart"
+        <button class="add-btn" (click)="addToCart(p)"
+          [disabled]="getAvailableStock(p) === 0 || cartService.isProcessing" data-testid="add-to-cart"
           data-cy="add-to-cart">
 
           Add to cart
@@ -85,8 +99,7 @@
 
   </div>
 
-  <div *ngIf="!loading && filteredProducts().length === 0" class="empty-products" data-testid="no-products"
-    data-cy="no-products">
+  <div *ngIf="!loading && filtered.length === 0" class="empty-products" data-testid="no-products" data-cy="no-products">
     No products found
   </div>
 
@@ -152,6 +165,9 @@
 
     </div>
 
+  </div>
+  <div *ngIf="showAddToast" class="cart-toast" data-testid="add-toast" data-cy="add-toast">
+    ✔ Added to cart
   </div>
   <div class="reset-wrapper">
     <p class="test-note">Testing utility</p>

@@ -25,7 +25,8 @@ export class Products implements OnInit {
   search = '';
 
   products: Product[] = [];
-
+  filtered: Product[] = [];
+  showAddToast = false;
   ngOnInit() {
     const savedProducts = localStorage.getItem('products');
 
@@ -36,7 +37,7 @@ export class Products implements OnInit {
           ...p,
           initialStock: p.initialStock ?? p.stock,
         }));
-
+        this.updateFilteredProducts();
         this.loading = false;
         this.cd.detectChanges();
       } else {
@@ -45,7 +46,7 @@ export class Products implements OnInit {
             ...p,
             initialStock: p.stock,
           }));
-
+          this.updateFilteredProducts();
           this.saveProducts();
           this.loading = false;
           this.cd.detectChanges();
@@ -69,7 +70,7 @@ export class Products implements OnInit {
     localStorage.setItem('products', JSON.stringify(this.products));
   }
 
-  filteredProducts(): Product[] {
+  updateFilteredProducts() {
     let result = this.products;
 
     if (this.filter !== 'all') {
@@ -77,20 +78,32 @@ export class Products implements OnInit {
     }
 
     if (this.search.trim()) {
-      result = result.filter((p) => p.name.toLowerCase().includes(this.search.toLowerCase()));
+      const term = this.search.toLowerCase();
+
+      result = result.filter(
+        (p) => p.name.toLowerCase().includes(term) || p.category.toLowerCase().includes(term)
+      );
     }
 
-    return result;
+    this.filtered = result;
   }
 
   addToCart(product: Product) {
-    if (product.stock > 0) {
+    if (this.getAvailableStock(product) > 0) {
       this.cartService.add(product);
+
+      if (!this.showAddToast) {
+        this.showAddToast = true;
+
+        setTimeout(() => {
+          this.showAddToast = false;
+          this.cd.detectChanges();
+        }, 1500);
+      }
 
       this.saveProducts();
     }
   }
-
   increaseCartItem(product: Product) {
     this.cartService.increaseByName(product.name);
 

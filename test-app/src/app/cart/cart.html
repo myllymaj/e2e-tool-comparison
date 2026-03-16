@@ -28,7 +28,8 @@
 
                     <div class="cart-controls">
 
-                        <button (click)="decreaseCartItem(item)" [disabled]="isCartLocked()" data-testid="decrease-item" data-cy="decrease-item">
+                        <button (click)="decreaseCartItem(item)" [disabled]="isCartLocked()" data-testid="decrease-item"
+                            data-cy="decrease-item">
                             −
                         </button>
 
@@ -36,7 +37,8 @@
                             {{ item.quantity }}
                         </span>
 
-                        <button (click)="increaseCartItem(item)" [disabled]="isCartLocked()" data-testid="increase-item" data-cy="increase-item">
+                        <button (click)="increaseCartItem(item)" [disabled]="isCartLocked()" data-testid="increase-item"
+                            data-cy="increase-item">
                             +
                         </button>
 
@@ -46,7 +48,7 @@
                         {{ (item.price * item.quantity).toFixed(2) }}€
                     </div>
 
-                    <button class="remove-btn" (click)="decreaseCartItem(item)" [disabled]="isCartLocked()"
+                    <button class="remove-btn" (click)="removeCartItem(item)" [disabled]="isCartLocked()"
                         data-testid="remove-item" data-cy="remove-item">
                         Remove
                     </button>
