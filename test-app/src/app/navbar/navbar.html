@@ -1,4 +1,4 @@
-<nav class="navbar" data-cy="navbar">
+<nav class="navbar" data-testid="navbar" data-cy="navbar">
 
   <a routerLink="/" class="logo" data-testid="logo" data-cy="logo">
     <span class="logo-icon">🍔</span>
@@ -8,9 +8,18 @@
 
   <div class="nav-links">
 
-    <a routerLink="/" routerLinkActive="active" class="nav-link">Home</a>
-    <a routerLink="/products" routerLinkActive="active" class="nav-link">Products</a>
-    <a routerLink="/about" routerLinkActive="active" class="nav-link">About</a>
+    <a routerLink="/" routerLinkActive="active" class="nav-link" data-testid="nav-home" data-cy="nav-home">
+      Home
+    </a>
+
+    <a routerLink="/products" routerLinkActive="active" class="nav-link" data-testid="nav-products"
+      data-cy="nav-products">
+      Products
+    </a>
+
+    <a routerLink="/about" routerLinkActive="active" class="nav-link" data-testid="nav-about" data-cy="nav-about">
+      About
+    </a>
 
   </div>
 

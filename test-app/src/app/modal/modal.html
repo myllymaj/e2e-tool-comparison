@@ -2,21 +2,25 @@
 
   <div class="modal" (click)="$event.stopPropagation()" data-testid="modal" data-cy="modal">
 
+    <!-- Close button -->
     <button class="modal-close" (click)="onClose()" [disabled]="closing" data-testid="close-modal-button"
       data-cy="close-modal-button">
       ✕
     </button>
 
+    <!-- Modal title -->
     <h2 class="modal-title" data-testid="modal-title" data-cy="modal-title">
       Example Modal
     </h2>
 
+    <!-- Modal description -->
     <p class="modal-text" data-testid="modal-text" data-cy="modal-text">
       This modal demonstrates a simple UI component that can be used in
       automated end-to-end testing scenarios.
     </p>
 
-    <div class="modal-actions">
+    <!-- Action buttons container -->
+    <div class="modal-actions" data-testid="modal-actions" data-cy="modal-actions">
 
       <button class="modal-btn secondary" (click)="onClose()" [disabled]="closing" data-testid="modal-cancel"
         data-cy="modal-cancel">

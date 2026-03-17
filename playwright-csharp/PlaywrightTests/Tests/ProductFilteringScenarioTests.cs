@@ -3,94 +3,142 @@
 namespace PlaywrightTests.Tests
 {
     /// <summary>
-    /// Test Scenario — Product Filtering.
+    /// Scenario 2 — Product Search and Filtering
     ///
-    /// This test scenario verifies filtering functionality on the Products page.
-    /// It ensures that selecting different categories updates the displayed
-    /// product list correctly after asynchronous data loading.
+    /// Verifies dynamic product filtering functionality,
+    /// including asynchronous data loading and UI updates.
     ///
-    /// Purpose:
-    /// To evaluate interaction with form controls, handling of dynamically
-    /// loaded content, and the reliability of assertions on collections of
-    /// elements in a single-page application context.
+    /// Covers:
+    /// - Category-based filtering
+    /// - Search by product name and category
+    /// - Combined search and filter behavior
+    /// - Empty result state handling
     /// </summary>
+
     [TestClass]
     public class ProductFilteringScenarioTests : E2EBaseTest
     {
         [TestInitialize]
         public async Task Setup()
         {
-            // Navigate to the home page to ensure a consistent initial state
             await Page.GotoAsync("http://localhost:4200");
-            await Expect(Page.GetByTestId("home-title")).ToBeVisibleAsync();
+
+            // Ensure deterministic test state
+            await Page.EvaluateAsync("() => localStorage.clear()");
+
+            await Expect(Page.GetByTestId("navbar")).ToBeVisibleAsync();
         }
 
         [TestMethod]
-        public async Task ProductFilteringTest()
+        public async Task ProductSearchAndFilteringScenarioTest()
         {
-            // Define locators for navigation and product filtering elements
-            var navProducts = Page.GetByTestId("nav-products");
-            var filterSelect = Page.GetByTestId("filter-select");
-            var productItems = Page.GetByTestId("product-item");
+            const int TotalProducts = 13;
+            const int FoodCount = 5;
+            const int DrinkCount = 5;
+            const int SnackCount = 3;
+            const int PizzaResults = 2;
 
-            // Navigate to the Products page
-            await Expect(navProducts).ToBeVisibleAsync();
-            await Expect(navProducts).ToBeEnabledAsync();
+            var navProducts = Page.GetByTestId("nav-products");
+            var searchInput = Page.GetByTestId("search-input");
+
+            var filterFood = Page.GetByTestId("filter-food");
+            var filterDrinks = Page.GetByTestId("filter-drinks");
+            var filterSnacks = Page.GetByTestId("filter-snacks");
+            var filterAll = Page.GetByTestId("filter-all");
+
+            var productItems = Page.GetByTestId("product-item");
+            var productCount = Page.GetByTestId("product-count");
+
+            var loading = Page.GetByTestId("loading");
+            var productsPage = Page.GetByTestId("products-page");
+            var emptyState = Page.GetByTestId("no-products");
+
+            // Listen for products API response
+            var responseTask = Page.WaitForResponseAsync(
+                r => r.Url.EndsWith("products.json") && r.Ok
+            );
+
+            // Navigate to products page
             await navProducts.ClickAsync();
 
-            // Verify navigation to the Products route
             await Expect(Page).ToHaveURLAsync(new Regex(".*/products$"));
 
-            // Home content should no longer be present
-            await Expect(Page.GetByTestId("home-title")).ToHaveCountAsync(0);
+            // Verify loading lifecycle
+            await Expect(loading).ToBeVisibleAsync();
+            await responseTask;
+            await Expect(loading).ToBeHiddenAsync();
 
-            // Wait for asynchronous loading to complete
-            await Expect(Page.GetByTestId("loading")).ToBeVisibleAsync();
-            await Expect(Page.GetByTestId("loading")).ToBeHiddenAsync(new() { Timeout = 10000 });
+            await Expect(productsPage).ToBeVisibleAsync();
 
-            // Confirm that the Products page is displayed
-            await Expect(Page.GetByTestId("products-page")).ToBeVisibleAsync();
+            // Default product list
+            await Expect(productItems).ToHaveCountAsync(TotalProducts);
+            await Expect(productCount).ToContainTextAsync(TotalProducts.ToString());
 
-            // Verify default filter state ("All")
-            await Expect(filterSelect).ToHaveValueAsync("all");
+            // Filter: Food
+            await filterFood.ClickAsync();
 
-            // Verify initial product list (all products visible)
-            await Expect(productItems).ToHaveCountAsync(4);
+            await Expect(productItems).ToHaveCountAsync(FoodCount);
+            await Expect(productCount).ToContainTextAsync(FoodCount.ToString());
 
-            await Expect(productItems.Nth(0)).ToHaveTextAsync("Pizza (food)");
-            await Expect(productItems.Nth(1)).ToHaveTextAsync("Burger (food)");
-            await Expect(productItems.Nth(2)).ToHaveTextAsync("Cola (drink)");
-            await Expect(productItems.Nth(3)).ToHaveTextAsync("Water (drink)");
+            // Ensure drinks are not shown
+            await Expect(productItems.Filter(new() { HasText = "Cola" })).ToHaveCountAsync(0);
+            await Expect(productItems.Filter(new() { HasText = "Water" })).ToHaveCountAsync(0);
 
-            // Apply Food filter and verify results
-            await filterSelect.SelectOptionAsync("food");
-            await Expect(filterSelect).ToHaveValueAsync("food");
+            // Filter: Drinks
+            await filterDrinks.ClickAsync();
+            await Expect(productItems).ToHaveCountAsync(DrinkCount);
 
-            await Expect(productItems).ToHaveCountAsync(2);
-            await Expect(productItems.Nth(0)).ToHaveTextAsync("Pizza (food)");
-            await Expect(productItems.Nth(1)).ToHaveTextAsync("Burger (food)");
+            await Expect(productItems.Filter(new() { HasText = "drink" })).ToHaveCountAsync(DrinkCount);
 
-            // Verify that drink items are not present in the product list
-            await Expect(productItems.Filter(new() { HasText = "Cola (drink)" })).ToHaveCountAsync(0);
-            await Expect(productItems.Filter(new() { HasText = "Water (drink)" })).ToHaveCountAsync(0);
+            // Filter: Snacks
+            await filterSnacks.ClickAsync();
+            await Expect(productItems).ToHaveCountAsync(SnackCount);
 
-            // Apply Drink filter and verify results
-            await filterSelect.SelectOptionAsync("drink");
-            await Expect(filterSelect).ToHaveValueAsync("drink");
+            // Reset filters
+            await filterAll.ClickAsync();
+            await Expect(productItems).ToHaveCountAsync(TotalProducts);
+            await Expect(productCount).ToContainTextAsync(TotalProducts.ToString());
 
-            await Expect(productItems).ToHaveCountAsync(2);
-            await Expect(productItems.Nth(0)).ToHaveTextAsync("Cola (drink)");
-            await Expect(productItems.Nth(1)).ToHaveTextAsync("Water (drink)");
+            // Search by name
+            await Expect(searchInput).ToBeVisibleAsync();
+            await Expect(searchInput).ToBeEditableAsync();
 
-            // Verify that food items are not present in the product list
-            await Expect(productItems.Filter(new() { HasText = "Pizza (food)" })).ToHaveCountAsync(0);
-            await Expect(productItems.Filter(new() { HasText = "Burger (food)" })).ToHaveCountAsync(0);
+            await searchInput.FillAsync("pizza");
 
-            // Reset filter to All and verify full list is restored
-            await filterSelect.SelectOptionAsync("all");
-            await Expect(filterSelect).ToHaveValueAsync("all");
+            await Expect(productItems).ToHaveCountAsync(PizzaResults);
+            await Expect(productItems.First).ToContainTextAsync("Pizza");
 
-            await Expect(productItems).ToHaveCountAsync(4);
+            // Ensure empty state is not shown
+            await Expect(emptyState).ToHaveCountAsync(0);
+
+            // Search by category
+            await searchInput.FillAsync("drink");
+
+            await Expect(productItems).ToHaveCountAsync(DrinkCount);
+
+            // URL should not change during search
+            await Expect(Page).ToHaveURLAsync(new Regex(".*/products$"));
+
+            // Combine search + filter
+            await searchInput.FillAsync("pizza");
+            await filterFood.ClickAsync();
+
+            await Expect(productItems).ToHaveCountAsync(PizzaResults);
+
+            // Empty result scenario
+            await searchInput.FillAsync("notarealproduct");
+
+            await Expect(emptyState).ToBeVisibleAsync();
+            await Expect(productItems).ToHaveCountAsync(0);
+
+            // Reset state
+            await filterAll.ClickAsync();
+            await searchInput.ClearAsync();
+
+            await Expect(searchInput).ToHaveValueAsync("");
+            await Expect(productItems).ToHaveCountAsync(TotalProducts);
+            await Expect(productCount).ToContainTextAsync(TotalProducts.ToString());
+            await Expect(emptyState).ToHaveCountAsync(0);
         }
     }
 }

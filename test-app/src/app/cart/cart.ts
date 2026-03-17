@@ -62,12 +62,35 @@ export class Cart {
 
         this.cartService.lastOrder = [...this.cartService.cart];
 
+        const savedProducts = localStorage.getItem('products');
+        if (savedProducts) {
+          const products = JSON.parse(savedProducts);
+
+          for (const cartItem of this.cartService.cart) {
+            const index = products.findIndex((p: any) => p.name === cartItem.name);
+
+            if (index !== -1) {
+              const product = products[index];
+
+              const updatedStock = Math.max(
+                0,
+                (product.initialStock ?? product.stock) - cartItem.quantity
+              );
+
+              products[index] = {
+                ...product,
+                initialStock: updatedStock,
+                stock: updatedStock,
+              };
+            }
+          }
+
+          localStorage.setItem('products', JSON.stringify(products));
+        }
+
         this.cartService.clear();
-
         this.cartService.purchaseCompleted = true;
-
         this.cartService.isProcessing = false;
-
         this.state = 'idle';
 
         this.cd.detectChanges();

@@ -1,19 +1,21 @@
 # Playwright (.NET / C#) — E2E Tests
 
-This project contains end-to-end (E2E) tests implemented with Playwright for .NET (C#). The tests target the sample Angular single-page application used in the thesis to compare Playwright and Cypress.
+This project contains end-to-end (E2E) tests implemented using Playwright for .NET (C#).
+
+The tests target the Angular single-page application used in the Bachelor’s thesis to compare Playwright and Cypress through equivalent test scenarios.
+
+---
 
 ## Prerequisites
 
 - .NET SDK (8.0 or newer recommended)
-- Node.js (only required by the test application)
-- Playwright browsers installed
+- Node.js (required for the Angular test application)
+- Playwright browsers
 
 Install Playwright browsers (first time only):
 
-```bash
 dotnet tool install --global Microsoft.Playwright.CLI
 playwright install
-```
 
 ---
 
@@ -21,104 +23,132 @@ playwright install
 
 Run all tests:
 
-```bash
 dotnet test
-```
 
 Run tests with detailed (verbose) logging:
 
-```bash
 dotnet test --logger "console;verbosity=detailed"
-```
 
 Run a specific test class:
 
-```bash
 dotnet test --filter FullyQualifiedName~NavigationScenarioTests
-```
 
 Run a specific test method:
 
-```bash
-dotnet test --filter FullyQualifiedName~NavigationScenarioTests.NavigationTest
-```
+dotnet test --filter FullyQualifiedName~NavigationScenarioTests.NavigationAndModalScenarioTest
 
 ---
 
 ## Debugging Tests
 
-### Enable Playwright Inspector (pwdebug)
+### Enable Playwright Inspector (PWDEBUG)
 
 PowerShell:
 
-```powershell
 $env:PWDEBUG=1
-```
 
 Command Prompt:
 
-```cmd
 set PWDEBUG=1
-```
+
+Run tests:
+
+dotnet test
+
+When debugging is enabled, Playwright will:
+
+- Launch the browser in headed mode
+- Pause execution between steps
+- Open the Playwright Inspector for step-by-step debugging
 
 Disable debugging:
 
 PowerShell:
 
-```powershell
 $env:PWDEBUG=0
-```
-
-Run tests while debugging is enabled:
-
-```bash
-dotnet test
-```
-
-When enabled, Playwright will:
-
-- Launch browsers in headed mode
-- Pause execution
-- Open the Playwright Inspector for step‑by‑step debugging
 
 ---
 
-## Notes for Thesis Comparison
+## Implemented Test Scenarios
 
-- Tests use `data-testid` attributes for stable element selection.
-- Each scenario represents common SPA interactions:
-  - Navigation
-  - Product filtering
-  - Modal interaction
-- Assertions include both positive and negative checks to verify UI state transitions.
+Each test class corresponds to a scenario used in the thesis comparison:
+
+- Navigation and Modal Scenario  
+  Verifies routing between pages and modal interaction behavior
+
+- Product Search and Filtering Scenario  
+  Tests dynamic filtering, searching, and empty states
+
+- Cart Interaction Scenario  
+  Validates cart operations, quantity updates, price calculation, and stock handling
+
+- Full User Workflow Scenario  
+  Simulates a complete purchase flow including confirmation, processing state, and receipt validation
+
+---
+
+## Testing Approach
+
+- Stable selectors are used via data-testid attributes
+- Tests use deterministic setup via localStorage.clear()
+- Assertions include both positive and negative checks
+- Asynchronous behavior is handled using Playwright’s auto-waiting and explicit assertions (Expect)
+- A shared base test class (E2EBaseTest) is used to standardize browser and page setup
+
+This ensures reliable and reproducible test execution across runs.
 
 ---
 
 ## Project Structure
 
-```
 PlaywrightTests/
   Tests/
     NavigationScenarioTests.cs
     ProductFilteringScenarioTests.cs
-    ModalInteractionScenarioTests.cs
-```
+    CartInteractionScenarioTests.cs
+    FullUserWorkflowScenarioTests.cs
 
-Each test class corresponds to one scenario used in the tool comparison.
+Each test class represents one scenario in the comparative study.
+
+---
+
+## Tracing
+
+Playwright tracing is enabled per test.
+
+Trace files are saved in:
+
+/playwright-traces/
+
+To view a trace:
+
+playwright show-trace <trace-file>
+
+Tracing provides:
+
+- Step-by-step execution timeline
+- DOM snapshots
+- Network activity
+- Console logs
 
 ---
 
 ## Troubleshooting
 
-If browsers fail to launch:
+### Browsers fail to launch
 
-```bash
 playwright install
-```
 
-If tests cannot connect to the application, ensure the Angular test app is running at:
+### Tests cannot connect to the application
 
-```
+Ensure the Angular test application is running at:
+
 http://localhost:4200
-```
 
+---
+
+## Notes for Thesis
+
+This implementation is designed to provide a controlled and consistent environment for comparing Playwright with Cypress.
+
+All scenarios are deterministic and based on mock data to ensure that observed differences are caused by the testing frameworks rather than application variability.

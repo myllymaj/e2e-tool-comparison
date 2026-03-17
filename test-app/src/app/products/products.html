@@ -23,21 +23,23 @@
 
       <div class="filter-bar" data-testid="filter-select" data-cy="filter-select">
 
-        <button class="filter-btn" [class.active]="filter === 'all'" (click)="filter='all'; updateFilteredProducts()">
+        <button class="filter-btn" [class.active]="filter === 'all'" (click)="filter='all'; updateFilteredProducts()"
+          data-testid="filter-all" data-cy="filter-all">
           All
         </button>
 
-        <button class="filter-btn" [class.active]="filter === 'food'" (click)="filter='food'; updateFilteredProducts()">
+        <button class="filter-btn" [class.active]="filter === 'food'" (click)="filter='food'; updateFilteredProducts()"
+          data-testid="filter-food" data-cy="filter-food">
           Food
         </button>
 
         <button class="filter-btn" [class.active]="filter === 'drink'"
-          (click)="filter='drink'; updateFilteredProducts()">
+          (click)="filter='drink'; updateFilteredProducts()" data-testid="filter-drinks" data-cy="filter-drinks">
           Drinks
         </button>
 
         <button class="filter-btn" [class.active]="filter === 'snack'"
-          (click)="filter='snack'; updateFilteredProducts()">
+          (click)="filter='snack'; updateFilteredProducts()" data-testid="filter-snacks" data-cy="filter-snacks">
           Snacks
         </button>
 

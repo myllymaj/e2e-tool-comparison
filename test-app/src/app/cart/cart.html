@@ -1,4 +1,4 @@
-<div class="cart-root">
+<div class="cart-root" data-testid="cart-root" data-cy="cart-root">
     <div class="cart-window" [class.cart-disabled]="isCartLocked()" data-testid="cart-modal" data-cy="cart-modal"
         *ngIf="cartService.cartOpen">
 
@@ -7,7 +7,7 @@
             ✕
         </button>
 
-        <h3 class="cart-title">Your Cart</h3>
+        <h3 class="cart-title" data-testid="cart-title" data-cy="cart-title">Your Cart</h3>
 
 
         <div *ngIf="cartService.cart.length === 0" class="empty-cart" data-testid="cart-empty" data-cy="cart-empty">
@@ -33,7 +33,7 @@
                             −
                         </button>
 
-                        <span class="quantity">
+                        <span class="quantity" data-testid="item-quantity" data-cy="item-quantity">
                             {{ item.quantity }}
                         </span>
 
@@ -77,9 +77,9 @@
 
 
 
-    <div *ngIf="state === 'confirm'" class="confirm-overlay" data-test="confirm-modal" data-cy="confirm-modal">
+    <div *ngIf="state === 'confirm'" class="confirm-overlay" data-testid="confirm-modal" data-cy="confirm-modal">
 
-        <div class="confirm-modal">
+        <div class="confirm-modal" data-testid="confirm-modal-content" data-cy="confirm-modal-content">
 
             <h3>Confirm purchase</h3>
 
@@ -91,20 +91,20 @@
             </label>
 
             <textarea id="delivery-note" [(ngModel)]="deliveryNote" placeholder="Leave a note for the kitchen..."
-                maxlength="100" data-cy="delivery-note">
+                maxlength="100" data-testid="delivery-note" data-cy="delivery-note">
 </textarea>
 
-            <div class="note-counter" data-cy="note-counter">
+            <div class="note-counter" data-testid="note-counter" data-cy="note-counter">
                 {{ deliveryNote.length || 0 }}/100
             </div>
 
             <div class="confirm-buttons">
 
-                <button (click)="confirmCheckout()" data-cy="confirm-yes">
+                <button (click)="confirmCheckout()" data-testid="confirm-yes" data-cy="confirm-yes">
                     Yes
                 </button>
 
-                <button (click)="cancelCheckout()" data-cy="confirm-no">
+                <button (click)="cancelCheckout()" data-testid="confirm-no" data-cy="confirm-no">
                     No
                 </button>
 
@@ -119,7 +119,7 @@
     <div *ngIf="state === 'processing'" class="processing-overlay" data-testid="purchase-loading"
         data-cy="purchase-loading">
         <div class="processing-modal">
-            <div class="spinner"></div>
+            <div class="spinner" data-testid="spinner" data-cy="spinner"></div>
             <p>Processing purchase...</p>
         </div>
     </div>
@@ -128,7 +128,7 @@
 
         ✔ Purchase successful!
 
-        <p *ngIf="deliveryNote" data-cy="delivery-note-confirmation">
+        <p *ngIf="deliveryNote" data-testid="delivery-note-confirmation" data-cy="delivery-note-confirmation">
             Note: {{ deliveryNote }}
         </p>
 

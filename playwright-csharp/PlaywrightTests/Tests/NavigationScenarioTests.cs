@@ -1,87 +1,109 @@
-﻿using System.Text.RegularExpressions;
+﻿using Microsoft.Playwright;
+using System.Text.RegularExpressions;
 
 namespace PlaywrightTests.Tests
 {
     /// <summary>
-    /// Test Scenario — Navigation.
+    /// Scenario 1 — Navigation and Modal Interaction
     ///
-    /// This test scenario verifies client-side navigation between pages
-    /// using the application's menu links. It ensures that routing updates
-    /// the URL correctly and that the corresponding page content is rendered.
+    /// Verifies client-side navigation between application routes,
+    /// including URL updates and correct page rendering.
     ///
-    /// Purpose:
-    /// To evaluate interaction with navigation elements, routing behavior,
-    /// page transitions, and the reliability of assertions in a single-page
-    /// application context.
+    /// Also validates modal behavior:
+    /// - Opening and closing interactions
+    /// - Backdrop click handling
+    /// - UI state changes (disabled/enabled elements)
     /// </summary>
+
     [TestClass]
     public class NavigationScenarioTests : E2EBaseTest
     {
         [TestInitialize]
         public async Task Setup()
         {
-            // Navigate to the home page to ensure a consistent initial state
             await Page.GotoAsync("http://localhost:4200");
-            await Expect(Page.GetByTestId("home-title")).ToBeVisibleAsync();
+
+            // Verify main layout is visible
+            await Expect(Page.GetByTestId("app-header")).ToBeVisibleAsync();
+            await Expect(Page.GetByTestId("navbar")).ToBeVisibleAsync();
+            await Expect(Page.GetByTestId("footer")).ToBeVisibleAsync();
         }
 
         [TestMethod]
-        public async Task NavigationTest()
+        public async Task NavigationAndModalScenarioTest()
         {
-            // Verify that the navigation bar is visible
-            await Expect(Page.GetByTestId("navbar")).ToBeVisibleAsync();
-
-            // Define locators for navigation links
+            var navHome = Page.GetByTestId("nav-home");
             var navProducts = Page.GetByTestId("nav-products");
             var navAbout = Page.GetByTestId("nav-about");
-            var navHome = Page.GetByTestId("nav-home");
 
-            // Navigate to the Products page
-            await Expect(navProducts).ToBeVisibleAsync();
-            await Expect(navProducts).ToBeEnabledAsync();
+            var openModal = Page.GetByTestId("open-modal-button");
+            var modal = Page.GetByTestId("modal");
+            var modalText = Page.GetByTestId("modal-text");
+            var closeModal = Page.GetByTestId("close-modal-button");
+            var backdrop = Page.GetByTestId("modal-backdrop");
+
+            var loading = Page.GetByTestId("loading");
+
+            // Open modal and verify it is visible
+            await openModal.ClickAsync();
+
+            await Expect(modal).ToBeVisibleAsync();
+            await Expect(modalText).ToBeVisibleAsync();
+            await Expect(backdrop).ToBeVisibleAsync();
+
+            // Button should be disabled while modal is open
+            await Expect(openModal).ToBeDisabledAsync();
+
+            // Clicking inside modal should not close it
+            await modal.ClickAsync();
+            await Expect(modal).ToBeVisibleAsync();
+
+            // Close modal using button
+            await closeModal.ClickAsync();
+
+            // Ensure modal is fully removed from DOM
+            await Expect(modal).ToBeHiddenAsync();
+            await Expect(backdrop).ToBeHiddenAsync();
+
+            // Button should be enabled again
+            await Expect(openModal).ToBeEnabledAsync();
+
+            // Re-open modal and close via backdrop
+            await openModal.ClickAsync();
+
+            await Expect(modal).ToBeVisibleAsync();
+            await backdrop.ClickAsync(new() { Position = new Position { X = 5, Y = 5 } });
+
+            await Expect(modal).ToBeHiddenAsync();
+            await Expect(backdrop).ToBeHiddenAsync();
+
+            await Expect(modal).ToHaveCountAsync(0);
+
+            // Navigate to products
             await navProducts.ClickAsync();
 
-            // Verify navigation to the Products route
             await Expect(Page).ToHaveURLAsync(new Regex(".*/products$"));
+            await Expect(Page).Not.ToHaveURLAsync(new Regex(".*/about$"));
 
-            // Home content should no longer be present
-            await Expect(Page.GetByTestId("home-title")).ToHaveCountAsync(0);
+            // Verify loading lifecycle
+            await Expect(loading).ToBeVisibleAsync();
+            await Expect(loading).ToBeHiddenAsync(new() { Timeout = 10000 });
 
-            // Wait for asynchronous loading to complete
-            await Expect(Page.GetByTestId("loading")).ToBeHiddenAsync(new() { Timeout = 10000 });
-
-            // Confirm that the Products page content is displayed
+            // Verify products page
             await Expect(Page.GetByTestId("products-page")).ToBeVisibleAsync();
+            await Expect(Page.GetByTestId("product-list")).ToBeVisibleAsync();
             await Expect(Page.GetByTestId("products-title")).ToBeVisibleAsync();
-            await Expect(Page.GetByTestId("product-item")).ToHaveCountAsync(4);
 
-            // Navigate to the About page
-            await Expect(navAbout).ToBeVisibleAsync();
-            await Expect(navAbout).ToBeEnabledAsync();
+            // Navigate to about
             await navAbout.ClickAsync();
 
-            // Verify navigation to the About route
             await Expect(Page).ToHaveURLAsync(new Regex(".*/about$"));
-
-            // Products content should no longer be present
-            await Expect(Page.GetByTestId("products-page")).ToHaveCountAsync(0);
-
-            // Confirm that the About page content is displayed
             await Expect(Page.GetByTestId("about-title")).ToBeVisibleAsync();
 
-            // Navigate back to the Home page
-            await Expect(navHome).ToBeVisibleAsync();
-            await Expect(navHome).ToBeEnabledAsync();
+            // Back to home
             await navHome.ClickAsync();
 
-            // Verify navigation back to the root route
-            await Expect(Page).ToHaveURLAsync(new Regex(".*/$"));
-
-            // About content should no longer be present
-            await Expect(Page.GetByTestId("about-title")).ToHaveCountAsync(0);
-
-            // Confirm that the Home page content is displayed
-            await Expect(Page.GetByTestId("home-title")).ToBeVisibleAsync();
+            await Expect(Page).ToHaveURLAsync("http://localhost:4200/");
         }
     }
 }

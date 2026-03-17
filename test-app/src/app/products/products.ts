@@ -57,6 +57,16 @@ export class Products implements OnInit {
     // purchase success trigger
     setInterval(() => {
       if (this.cartService.purchaseCompleted) {
+        const savedProducts = localStorage.getItem('products');
+
+        if (savedProducts) {
+          this.products = JSON.parse(savedProducts).map((p: Product) => ({
+            ...p,
+            initialStock: p.initialStock ?? p.stock,
+          }));
+        }
+
+        this.updateFilteredProducts();
         this.purchaseSuccess = true;
 
         this.cd.detectChanges();
@@ -127,11 +137,12 @@ export class Products implements OnInit {
 
   getAvailableStock(product: Product): number {
     const cartItem = this.cartService.cart.find((c) => c.name === product.name);
+    const baseStock = product.initialStock ?? product.stock;
 
     if (!cartItem) {
-      return product.initialStock ?? product.stock;
+      return baseStock;
     }
 
-    return (product.initialStock ?? 0) - cartItem.quantity;
+    return baseStock - cartItem.quantity;
   }
 }

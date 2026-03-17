@@ -1,62 +1,61 @@
-<div class="home-container" data-cy="home-page">
+<div class="home-container" data-testid="home-page" data-cy="home-page">
 
-  <div class="card home-card" data-cy="home-card">
+  <div class="card home-card" data-testid="home-card" data-cy="home-card">
 
-    <h1 class="home-title" data-cy="home-title">
+    <h1 class="home-title" data-testid="home-title" data-cy="home-title">
       TestBites – E2E Testing Demo Store
     </h1>
 
-    <p class="home-description" data-cy="home-description">
+    <p class="home-description" data-testid="home-description" data-cy="home-description">
       This demo webshop was developed to support the evaluation and comparison
       of modern end-to-end testing frameworks such as Playwright and Cypress.
       The application includes common ecommerce interactions that can be
       automated and validated through E2E tests.
     </p>
 
-    <div class="home-actions">
+    <!-- Group of primary actions on home page -->
+    <div class="home-actions" data-testid="home-actions" data-cy="home-actions">
 
-      <button (click)="openModal()" [disabled]="showModal" class="primary-btn" data-cy="open-modal-button">
-
+      <button (click)="openModal()" [disabled]="showModal" class="primary-btn" data-testid="open-modal-button"
+        data-cy="open-modal-button">
         Open Example Modal
-
       </button>
 
-      <a routerLink="/products" class="secondary-btn" data-cy="go-products">
-
+      <a routerLink="/products" class="secondary-btn" data-testid="go-products" data-cy="go-products">
         Browse Products
-
       </a>
 
     </div>
 
   </div>
 
+  <!-- Feature overview section -->
+  <div class="card test-features" data-testid="features-card" data-cy="features-card">
 
-  <div class="card test-features">
-
-    <h2 data-cy="features-title">
+    <h2 data-testid="features-title" data-cy="features-title">
       Testable Features
     </h2>
 
-    <ul class="feature-list">
+    <!-- List container for feature items -->
+    <ul class="feature-list" data-testid="feature-list" data-cy="feature-list">
 
-      <li data-cy="feature-loading">
+      <li data-testid="feature-loading" data-cy="feature-loading">
         Simulated loading states
       </li>
 
-      <li data-cy="feature-search">
+      <li data-testid="feature-search" data-cy="feature-search">
         Product search and filtering
       </li>
 
-      <li data-cy="feature-cart">
+      <li data-testid="feature-cart" data-cy="feature-cart">
         Shopping cart interactions
       </li>
 
-      <li data-cy="feature-checkout">
+      <li data-testid="feature-checkout" data-cy="feature-checkout">
         Checkout confirmation workflow
       </li>
 
-      <li data-cy="feature-storage">
+      <li data-testid="feature-storage" data-cy="feature-storage">
         Persistent browser storage (localStorage)
       </li>
 
@@ -66,5 +65,6 @@
 
 </div>
 
-<app-modal *ngIf="showModal" (close)="closeModal()" data-cy="example-modal">
+<!-- Modal root component -->
+<app-modal *ngIf="showModal" (close)="closeModal()" data-testid="modal-root" data-cy="modal-root">
 </app-modal>

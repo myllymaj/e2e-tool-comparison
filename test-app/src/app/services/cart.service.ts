@@ -38,8 +38,11 @@ export class CartService {
     }
   }
 
-  add(product: { name: string; category: string; price: number; stock: number }) {
+  add(product: any) {
     const existing = this.cart.find((p) => p.name === product.name);
+
+    const priceToUse =
+      product.sale && product.salePrice != null ? product.salePrice : product.price;
 
     if (existing) {
       if (existing.quantity < existing.maxStock) {
@@ -49,7 +52,7 @@ export class CartService {
       this.cart.push({
         name: product.name,
         category: product.category,
-        price: product.price,
+        price: priceToUse,
         quantity: 1,
         maxStock: product.stock,
       });
@@ -57,7 +60,6 @@ export class CartService {
 
     this.saveCart();
   }
-
   increaseByName(name: string) {
     const item = this.cart.find((p) => p.name === name);
 
