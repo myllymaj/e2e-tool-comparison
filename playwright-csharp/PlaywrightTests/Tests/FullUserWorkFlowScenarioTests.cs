@@ -3,7 +3,7 @@
 namespace PlaywrightTests.Tests
 {
     /// <summary>
-    /// Scenario 4 — Full User Workflow
+    /// Scenario 4 - Full User Workflow
     ///
     /// Validates complete purchase flow including:
     /// - Product selection and cart updates

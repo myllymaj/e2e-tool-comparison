@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 namespace PlaywrightTests.Tests
 {
     /// <summary>
-    /// Scenario 1 — Navigation and Modal Interaction
+    /// Scenario 1 - Navigation and Modal Interaction
     ///
     /// Verifies client-side navigation between application routes,
     /// including URL updates and correct page rendering.

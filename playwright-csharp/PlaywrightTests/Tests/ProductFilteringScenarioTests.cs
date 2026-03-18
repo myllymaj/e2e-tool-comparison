@@ -3,16 +3,16 @@
 namespace PlaywrightTests.Tests
 {
     /// <summary>
-    /// Scenario 2 — Product Search and Filtering
+    /// Scenario 2 - Product Search and Filtering
     ///
-    /// Verifies dynamic product filtering functionality,
-    /// including asynchronous data loading and UI updates.
+    /// Verifies product filtering and search functionality,
+    /// including asynchronous loading and UI updates.
     ///
     /// Covers:
-    /// - Category-based filtering
-    /// - Search by product name and category
-    /// - Combined search and filter behavior
-    /// - Empty result state handling
+    /// - Category filtering
+    /// - Search by name and category
+    /// - Combined filter and search
+    /// - Empty state handling
     /// </summary>
 
     [TestClass]
